@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Meter Live Data Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css"/>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <header>
+                <div class="header-content">
+                    <img src="img/EASTRON logo dark blue.png" alt="Company Logo" class="logo">
+                    <h2 style="color: #009ee2;">EASTRON SDM-630 Modbus V2 - Dashboard</h2>
+                </div>
+                <div class="menu-buttons">
+                    <a href="javascript:void(0);" onclick="window.location.reload();"><img src="img/Refresh-32x32.png" alt="Refresh" class="refresh-icon" title="Refresh page"></a>
+                    <button id="View_Con_btn" onclick="viewConnection()">View Connection</button>
+                    <!-- Button to open the modal -->
+                    <button id="openModalBtn">View Manual</button>
+                    <div class="com-address-dropdown">
+                        <select id="COM_dropdown" onchange="changeComAddress(this.value)">
+                            <option value="COM1">COM1</option>
+                            <option value="COM2">COM2</option>
+                            <option value="COM3">COM3</option>
+                            <option value="COM4">COM4</option>
+                            <option value="COM5">COM5</option>
+                            <option value="COM6">COM6</option>
+                            <option value="COM7">COM7</option>
+                            <option value="COM8">COM8</option>
+                            <option value="COM9">COM9</option>
+                            <option value="COM10">COM10</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+        </div> <!--div class="navbar"-->
+        <section class="connection-data">
+            <ul>
+                <li>Last updated: <span id="data_local_timestamp">---</span></li>
+                <li>Name of Meter: <span id="meter_name">---</span></li>
+                <li>RS485_Address: <span id="rs485_address">---</span></li>
+                <li>Serial port: <span id="serial_port">---</span></li>
+                <!-- Add more statistics here as needed -->
+            </ul>
+        </section>
+        <main>    
+            <div class="main-content">
+                <!-- The Modal to show the PDF Manual -->
+                <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <iframe id="pdfViewer" width="100%" height="600px"></iframe>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="data-table" class="primary" title="Realtime measurements"> <!-- cellspacing="0" width="100%" border="2" -->
+                        <thead>
+                            <tr>
+                                {% for header in headings %}
+                                <th class="th_format">{{ header }}</th>
+<!--                                <th class="th_first">Eastron SDM-630</th>-->
+<!--                                <th class="th_format">L1</th>-->
+<!--                                <th class="th_format">L2</th>-->
+<!--                                <th class="th_format">L3</th>-->
+<!--                                <th class="th_format">Total</th>-->
+<!--                                <th class="th_format">Unit</th>-->
+                                {% endfor %}
+                                <!-- Add more columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Real-time data rows will be inserted here dynamically -->
+                            {% for row in data %}
+                            <tr>
+                                {% for cell in row %}
+                                    <td class="td_center">{{ cell }}</td>
+                                {% endfor %}]
+                            </tr>
+                            {% endfor %}
+<!--                            <tr>-->
+<!--                                <td id="Line_Neutral_group">Voltage (Line-Neutral)</td>-->
+<!--                                <td id="L1-N_Volts" class="td_center" title="L1-N Volts"></td> &lt;!&ndash; L1-N Volts 0x00 &ndash;&gt;-->
+<!--                                <td id="L2-N_Volts" class="td_center" title="L2-N Volts"></td> &lt;!&ndash; L2-N Volts 0x02 &ndash;&gt;-->
+<!--                                <td id="L3-N_Volts" class="td_center" title="L3-N Volts"></td> &lt;!&ndash; L3-N Volts 0x04 &ndash;&gt;-->
+<!--                                <td class="td_center" title="Unused">-&#45;&#45;</td> &lt;!&ndash; Blank &ndash;&gt;-->
+<!--                                <td>Volt</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Current_group">Current</td>-->
+<!--                                <td id="L1_Amps" class="td_center" title="L1 Amps"></td> &lt;!&ndash; L1 Amps 0x06 &ndash;&gt;-->
+<!--                                <td id="L2_Amps" class="td_center" title="L2 Amps"></td> &lt;!&ndash; L2 Amps 0x08 &ndash;&gt;-->
+<!--                                <td id="L3_Amps" class="td_center" title="L3 Amps"></td> &lt;!&ndash; L3 Amps 0x0A &ndash;&gt;-->
+<!--                                <td id="Sum_Line_Currents" class="td_center" title="Sum of Line Currents (A)">08</td> &lt;!&ndash; Sum of Line Currents 0x30 &ndash;&gt;-->
+<!--                                <td>Ampere</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Power_group">Power</td>-->
+<!--                                <td id="L1_Pwr" class="td_center"></td> &lt;!&ndash; L1 Watts 0x0C &ndash;&gt;-->
+<!--                                <td id="L2_Pwr" class="td_center"></td> &lt;!&ndash; L2 Watts 0x0E &ndash;&gt;-->
+<!--                                <td id="L3_Pwr" class="td_center"></td> &lt;!&ndash; L3 Watts 0x10 &ndash;&gt;-->
+<!--                                <td id="Total_Watts" class="td_center" title="Total System Power (W)"></td> &lt;!&ndash; Total Sys Power 0x34&ndash;&gt;-->
+<!--                                <td>Watt</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Line_Frequency_group">Line Frequency</td>-->
+<!--                                <td id="td_blank1" class="td_blank" title="Unused"></td>-->
+<!--                                <td id="td_blank2" class="td_blank" title="Unused"></td>-->
+<!--                                <td id="td_blank3" class="td_blank" title="Unused"></td>-->
+<!--                                <td style="background-color: #bde4fa;" id="Line_Frequency" class="td_center" title="Line Frequency (Hz)"></td> &lt;!&ndash; Line_Frequency 46 &ndash;&gt;-->
+<!--                                &lt;!&ndash; td colspan="4" style="background-color: #bde4fa;" id="Line_Frequency" class="td_center"></td> &ndash;&gt;-->
+<!--                                &lt;!&ndash; <td id="td_blank" align="center">-</td> &ndash;&gt;-->
+<!--                                <td>Hz</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Power_Factor_group">Power Factor</td>-->
+<!--                                <td id="L1_Pwr_Factor" class="td_center" title="L1 Power Factor"></td> &lt;!&ndash; L1 PF 0x1E &ndash;&gt;-->
+<!--                                <td id="L2_Pwr_Factor" class="td_center" title="L2 Power Factor"></td> &lt;!&ndash; L2 PF 0x20  &ndash;&gt;-->
+<!--                                <td id="L3_Pwr_Factor" class="td_center" title="L3 Power Factor"></td> &lt;!&ndash; L3 PF 0x22 &ndash;&gt;-->
+<!--                                <td id="Total_Pwr_Factor" class="td_center" title="Total System Power Factor"></td> &lt;!&ndash; Total Sys PF 0x3E &ndash;&gt;-->
+<!--                                <td>-</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Import_group" title="Import Energy since last reset (kWh)">Import Energy</td>-->
+<!--                                <td id="L1_Import_kwh" class="td_center" title="L1 import kWh"></td> &lt;!&ndash; L1 Import Energy 0x015A &ndash;&gt;-->
+<!--                                <td id="L2_Import_kwh" class="td_center" title="L2 import kWh"></td> &lt;!&ndash; L2 Import Energy 0x015C &ndash;&gt;-->
+<!--                                <td id="L3_Import_kwh" class="td_center" title="L3 import kWh"></td> &lt;!&ndash; L3 Import Energy 0x015E &ndash;&gt;-->
+<!--                                <td id="Import_Wh_Since_Last_Reset" class="td_center" title="Import Energy Since Last Reset (KWh/MWh)">25</td> &lt;!&ndash; Import Wh since last reset 0x48 &ndash;&gt;-->
+<!--                                <td>kWh</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Export_group" title="Export Energy since last reset (kWh)">Export Energy</td>-->
+<!--                                <td id="L1_Export_kwh" class="td_center" title="L1 export kWh"></td> &lt;!&ndash; L1 Export Energy 0x0160 &ndash;&gt;-->
+<!--                                <td id="L2_Export_kwh" class="td_center" title="L2 export kWh"></td> &lt;!&ndash; L2 Export Energy 0x0162 &ndash;&gt;-->
+<!--                                <td id="L3_Export_kwh" class="td_center" title="L3 export kWh"></td> &lt;!&ndash; L3 Export Energy 0x0164 &ndash;&gt;-->
+<!--                                <td id="Export_Wh_Since_Last_Reset" class="td_center" title="Export Energy Since Last Reset (KWh/MWh)">29</td> &lt;!&ndash; Export Wh since last reset 0x4A &ndash;&gt;-->
+<!--                                <td>kWh</td>-->
+<!--                            </tr>-->
+<!--                            &lt;!&ndash; From here onwards we should have these data hidden by default and only if the user selects them to appear &ndash;&gt;-->
+<!--                            <tr>-->
+<!--                                <td id="Phase_Volt_Amps">Volt Amps</td>-->
+<!--                                <td id="Phase1_VA" class="td_center" title="Phase 1 VA"></td> &lt;!&ndash; Phase 1 Volt Amps 0x12 &ndash;&gt;-->
+<!--                                <td id="Phase2_VA" class="td_center" title="Phase 2 VA"></td> &lt;!&ndash; Phase 2 Volt Amps 0x14 &ndash;&gt;-->
+<!--                                <td id="Phase3_VA" class="td_center" title="Phase 3 VA"></td> &lt;!&ndash; Phase 3 Volt Amps 0x16 &ndash;&gt;-->
+<!--                                <td id="Total_System_VA" class="td_center" title="Total System VA">33</td> &lt;!&ndash; Total System Volt Amps 0x38 &ndash;&gt;-->
+<!--                                <td>VA</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Phase_Volt_Amps_Reactive">Volt Amps Reactive</td>-->
+<!--                                <td id="Phase1_VAr" class="td_center" title="Phase 1 VAr"></td> &lt;!&ndash; Phase 1 Volt Amps 0x18 &ndash;&gt;-->
+<!--                                <td id="Phase2_VAr" class="td_center" title="Phase 1 VAr"></td> &lt;!&ndash; Phase 2 Volt Amps 0x1A &ndash;&gt;-->
+<!--                                <td id="Phase3_VAr" class="td_center" title="Phase 1 VAr"></td> &lt;!&ndash; Phase 3 Volt Amps 0x1C &ndash;&gt;-->
+<!--                                <td id="Total_System_VAr" class="td_center" title="Total System VAr">37</td> &lt;!&ndash; Total System Volt Amps Reactive 0x3C &ndash;&gt;-->
+<!--                                <td>VAr</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Line_Line_group">Voltage (Line-Line)</td>-->
+<!--                                <td id="L1-L2_Volts" class="td_center" title="L1-L2 Volts"></td> &lt;!&ndash; L1-L2 Volts 0xC8 &ndash;&gt;-->
+<!--                                <td id="L2-L3_Volts" class="td_center" title="L2-L3 Volts"></td> &lt;!&ndash; L2-L3 Volts 0xCA &ndash;&gt;-->
+<!--                                <td id="L3-L1_Volts" class="td_center" title="L3-L1 Volts"></td> &lt;!&ndash; L3-L1 Volts 0xCC &ndash;&gt;-->
+<!--                                <td class="td_center" title="Unused">-&#45;&#45;</td> &lt;!&ndash; Blank &ndash;&gt;-->
+<!--                                <td>Volt</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="THD_Voltage_group">THD voltage</td>-->
+<!--                                <td id="L1_N_Volts_THD" class="td_center" title="L1-N THD %"></td> &lt;!&ndash; L1-N THD % 0xEA &ndash;&gt;-->
+<!--                                <td id="L2_N_Volts_THD" class="td_center" title="L2-N THD %"></td> &lt;!&ndash; L2-N THD % 0xEC &ndash;&gt;-->
+<!--                                <td id="L3_N_Volts_THD" class="td_center" title="L3-N THD %"></td> &lt;!&ndash; L3-N THD % 0xEE &ndash;&gt;-->
+<!--                                <td id="Average_L_N_Volts_THD" class="td_center"title="Average Line to Neutral Volts THD %">21</td> &lt;!&ndash; Average Line to Neutral Volts THD % 0xF8 &ndash;&gt;-->
+<!--                                <td>%</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="THD_Current_group">THD current</td>-->
+<!--                                <td id="L1_Current_THD" class="td_center" title="L1 Current THD %"></td> &lt;!&ndash; L1 current THD % 0xF0 &ndash;&gt;-->
+<!--                                <td id="L2_Current_THD" class="td_center" title="L2 Current THD %"></td> &lt;!&ndash; L2 current THD % 0xF2 &ndash;&gt;-->
+<!--                                <td id="L3_Current_THD" class="td_center" title="L3 Current THD %"></td> &lt;!&ndash; L3 current THD % 0xF4 &ndash;&gt;-->
+<!--                                <td id="Average_L_Current_THD" class="td_center"title="Average Line Current THD %">21</td> &lt;!&ndash; Average Line Current THD % 0xFA &ndash;&gt;-->
+<!--                                <td>%</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td rowspan="2" id="Average_values">Average values</td>-->
+<!--                                <th id="Average_Line_Neutral_Volts" class="th_format">Avg L - N Volts (V)</th> &lt;!&ndash; Average Line to Neutral Volts &ndash;&gt;-->
+<!--                                <th id="Average_Line_Line_Volts" class="th_format">Avg L - L Volts (V)</th> &lt;!&ndash; Average Line to Line Volts &ndash;&gt;-->
+<!--                                <th id="Average_Line_Current" class="th_format">Avg Line Current (A)</th> &lt;!&ndash; Average Line Current &ndash;&gt;-->
+<!--                                <th id="Sum_of_Line_Currents" class="th_format">Sum of Line Currents (A)</th> &lt;!&ndash; Sum of Line Currents &ndash;&gt;-->
+<!--                                <th id="reserved_header_1" class="th_format" title="Unused">-&#45;&#45;</th> &lt;!&ndash; Unused Space &ndash;&gt;-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td id="Average_Line_Neutral_Volts_Value" class="td_center" title="Average Line to Neutral Volts"></td> &lt;!&ndash; Average Line to Neutral Volts 0x2A &ndash;&gt;-->
+<!--                                <td id="Average_Line_Line_Volts_Value" class="td_center" title="Average Line to Line Volts"></td> &lt;!&ndash; Average Line to Line Volts 0xCE &ndash;&gt;-->
+<!--                                <td style="background-color: #e3f7ff;" id="Average_Line_Current_Value" class="td_center" title="Average Line Current"></td> &lt;!&ndash; Average Line Current 0x2E &ndash;&gt;-->
+<!--                                <td id="Sum_of_Line_Currents_Value" class="td_center" title="Sum of Line Currents"></td> &lt;!&ndash; Sum of Line Currents 0x30 &ndash;&gt;-->
+<!--                                <td id="reserved_space_1" class="td_center" title="Unused">-&#45;&#45;</td> &lt;!&ndash; Reserved Space &ndash;&gt;-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td rowspan="2" id="Maximum_values">Maximum values</td>-->
+<!--                                <th id="Max_Phase1_Current_Demand" class="th_format" title="Max Phase 1 Current Demand (A)">Max L1 Cur. Demand (A)</th> &lt;!&ndash; Max Phase 1 Current Demand (Amps) &ndash;&gt; -->
+<!--                                <th id="Max_Phase2_Current_Demand" class="th_format" title="Max Phase 2 Current Demand (A)">Max L2 Cur. Demand (A)</th> &lt;!&ndash; Max Phase 2 Current Demand (A) &ndash;&gt;-->
+<!--                                <th id="Max_Phase3_Current_Demand" class="th_format" title="Max Phase 3 Current Demand (A)">Max L2 Cur. Demand (A)</th> &lt;!&ndash; Max Phase 3 Current Demand (A) &ndash;&gt;-->
+<!--                                <th id="Max_Neutral_Current" class="th_format" title="Max Neutral Current (A)">Max N Cur. (A)</th> &lt;!&ndash; Max Neutral Current (A) &ndash;&gt;-->
+<!--                                <th id="reserved_header_3" class="th_format">-&#45;&#45;</th> &lt;!&ndash; Unused Space &ndash;&gt;-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td style="background-color: #e3f7ff;" id="Max_Phase1_Current_Demand_value" class="td_center" title="Max L1 Current Demand"></td> &lt;!&ndash; Max Phase 1 Current Demand (Amps) 0x0108 &ndash;&gt;-->
+<!--                                <td id="Max_Phase2_Current_Demand_value" class="td_center" title="Max L2 Current Demand"></td> &lt;!&ndash; Max Phase 1 Current Demand (Amps) 0x010A &ndash;&gt;-->
+<!--                                <td id="Max_Phase3_Current_Demand_value" class="td_center" title="Max L3 Current Demand"></td> &lt;!&ndash; Max Phase 1 Current Demand (Amps) 0x010C &ndash;&gt;-->
+<!--                                <td id="Max_Neutral_Current_value" class="td_center" title="Max Neutral Current Demand"></td> &lt;!&ndash; Max Neutral Current (A) 0x6A  &ndash;&gt;-->
+<!--                                <td>Ampere</td>-->
+<!--                            </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="meter-image">
+                    <h2>Meter Image</h2>
+                    <!-- Lazy load attribute loads the image only when needed (instead of requiring it to render the page loading="eager")-->
+                    <img src="img/EASTRON SDM630 MODBUS-MID V2.jpg" alt="Meter Image" loading="lazy">
+                </div>
+            </div>
+        </main>        
+        <footer>
+            <p>&copy; 2024 Michalis Delagrammatikas</p>
+        </footer>
+    </div>  
+    <script src="script.js"></script>
+    <script>
+        function viewConnection() {
+            // Add your code for viewing connection here
+            console.log("View Connection clicked");
+        }
+
+        function changeComAddress(comAddress) {
+            // Add your code for changing COM address here
+            console.log("COM Address changed to " + comAddress);
+        }
+
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("openModalBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+            document.getElementById("pdfViewer").src = "Manual/Eastron SDM630-Modbus protocol V1.8.pdf";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+            document.getElementById("pdfViewer").src = "";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                document.getElementById("pdfViewer").src = "";
+            }
+        }
+    </script>  
+</body>
+</html>

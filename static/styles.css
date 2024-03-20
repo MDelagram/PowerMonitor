@@ -1,0 +1,221 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;         /* NEW, Spec - Firefox, Chrome, Opera */
+
+    display: -webkit-box;   /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+    display: -ms-flexbox;  /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+
+    flex-direction: column;
+    height: 100%;
+    background-color: transparent /*rgba(255, 255, 255, 0.5); /* Add a semi-transparent background color to the container */
+    /* Adjust the rgba values and opacity as needed */
+}
+
+header {
+    background: #2b374e;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center; /* Horizontally center items - Remove it if you want it to be left justified (default)*/
+    align-items: center; /* Vertically center items */
+}
+
+.logo {
+    max-width: 100px; /* Adjust according to your logo size */
+    margin-right: 20px; /* Add space between logo and text */
+}
+
+.header-content {
+    display: flex;
+
+    display: -webkit-box;   /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+    display: -ms-flexbox;  /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+
+    align-items: center; /* Vertically center items */
+    margin-right: auto; /* Pushes the buttons to the right */
+    /*flex-grow: 1; /* Let the header content take up remaining space */
+}
+
+h2 {
+    margin: 0; /* Remove default margin */
+    /*flex-grow: 1; /* Let h2 element take up remaining space */
+}
+
+/*nav {
+
+}*/
+
+section[class="connection-data"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+img[class="refresh-icon"] {
+    margin-right: 10px;
+    border: none;
+    /*padding: 8px 12px;*/
+    cursor: pointer;
+}
+
+.menu-buttons {
+    display: flex;
+
+    display: -webkit-box;   /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+    display: -ms-flexbox;  /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+
+    justify-content: flex-end; /* Aligns the buttons to the right */
+}
+
+.menu-buttons button {
+    margin-right: 10px;
+    background-color: #009fe3;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.menu-buttons button:hover {
+    background-color: #777;
+}
+
+.com-address-dropdown {
+    margin-right: 10px;
+}
+
+.com-address-dropdown select {
+    padding: 8px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Properties added here apply to the whole <table>*/
+table.primary td {
+    background-color: #e3f7ff;
+    /*color: #000000;*/
+    /*font-size: 90%;*/
+    /*align: center;*/ /* use only if you want to align all the elements of the table center */
+}
+
+/* target the 1st column of the table (except the <th>)*/
+tbody > tr > :not(th):nth-child(1) {
+    background-color: #bde4fa;
+}
+
+/* this is a CSS style that targets <th> elements with: class="th_format"*/
+th.th_format {
+    background-color: #009ee2;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+ /* this is a CSS style that targets the first <th> element with: class="th_first"*/
+th.th_first {
+    background-color: #009ee2;
+    color: #FFFFFF;
+    text-align: left;
+}
+
+/* this is a CSS style that targets <td> elements with: class="center"*/
+td.td_center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* target the elements with class '.td_blank' and take precedence over the 'table.primary' selector  {*/
+table.primary .td_blank {
+    background-color: #009ee2;
+    color: #FFFFFF;
+}
+
+#td_design1 {
+    text-align: center;
+    vertical-align: middle;
+}
+#td_design3 {
+    background-color: #f00112;
+    color: #FFFFFF;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 2px solid #000000;
+    padding: 8px;
+    text-align: left;
+}
+
+    /* Styles for the modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* This is the responsible for the Close button 'X' of the modal.*/
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer; /* Added cursor pointer */
+}
+
+.close:hover { /* Change cursor to hand on hover */
+    cursor: pointer;
+}
+
+.meter-image {
+    text-align: center;
+    padding: 20px;
+}
+
+.meter-image img {
+    max-width: 70%;
+    height: auto;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
